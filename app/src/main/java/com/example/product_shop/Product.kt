@@ -2,17 +2,22 @@ package com.example.product_shop
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.os.Parcel
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
-import com.google.android.material.snackbar.Snackbar
+import java.io.Serializable
 
-class Product(val name:String, val price:String, val image: Bitmap?) {}
+class Product(val name:String?, val price:String?, val contextpr:String?, val image: Drawable)
+
+
 
 class ListAdapter(context: Context,listProduct: MutableList<Product>): ArrayAdapter<Product> (context,R.layout.item,listProduct) {
 
@@ -27,11 +32,11 @@ class ListAdapter(context: Context,listProduct: MutableList<Product>): ArrayAdap
 
         val name = view?.findViewById<TextView>(R.id.nameText_item)
         val price = view?.findViewById<TextView>(R.id.priceText_item)
-        val image = view?.findViewById<ImageView>(R.id.imageTv_item)
+          val image = view?.findViewById<ImageView>(R.id.imageTv_item)
 
-               image?.setImageBitmap(product?.image)
+             image?.setImageDrawable(product?.image)
 
-            name?.text = " Товар: ${(product?.name)}"
+             name?.text = " Товар: ${(product?.name)}"
 
             if ((product?.price)?.isEmpty() == true) { price?.text = " Цена:   Не установлено" } else price?.text = " Цена: ${product?.price}"
                  return view!! }

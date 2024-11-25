@@ -1,27 +1,32 @@
 package com.example.product_shop
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.ImageDecoder
+import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.media.Image
 import android.os.Bundle
-import android.provider.MediaStore
-import android.provider.MediaStore.Images.Media
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ListView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.google.android.material.snackbar.Snackbar
-import java.io.IOException
+import androidx.core.graphics.drawable.toBitmap
+import java.util.ArrayList
 
 class Activity2 : AppCompatActivity() {
 
@@ -31,14 +36,15 @@ class Activity2 : AppCompatActivity() {
           private lateinit var name: EditText
           private lateinit var price: EditText
           private lateinit var listTv:ListView
+          private lateinit var contextpr: EditText
 
          var GALLARY = 111
-         var bitmap: Bitmap? = null
               var listProduct: MutableList<Product> = mutableListOf()
 
 
            var s = 0
 
+    @SuppressLint("WrongThread")
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -50,10 +56,10 @@ class Activity2 : AppCompatActivity() {
         name = findViewById(R.id.nameText)
         price = findViewById(R.id.priceText)
         listTv = findViewById(R.id.textTv)
-
+        contextpr = findViewById(R.id.contextTv)
 
         val adapter = ListAdapter(this,listProduct)
-        listTv.adapter = adapter
+          listTv.adapter = adapter
 
         imageTv.setOnClickListener {
             val photo = Intent(Intent.ACTION_PICK)
@@ -63,18 +69,17 @@ class Activity2 : AppCompatActivity() {
         button.setOnClickListener{
                if (name.text.isEmpty()) return@setOnClickListener
 
-            bitmap = (imageTv.drawable as BitmapDrawable).bitmap
-                 listProduct += listOf(Product(name.text.toString(),price.text.toString(),bitmap))
+                      listProduct += listOf(Product(name.text.toString(),price.text.toString(),contextpr.text.toString(),imageTv.drawable))
 
-
-               adapter.notifyDataSetChanged()
+              adapter.notifyDataSetChanged()
               name.text.clear()
               price.text.clear()
               imageTv.setImageResource(R.drawable.qw)
-               bitmap = null }
+              contextpr.text.clear()
+
+        }
 
            listTv.onItemClickListener = selectItem(this,adapter)
-
 
 
 
@@ -82,7 +87,6 @@ class Activity2 : AppCompatActivity() {
         setSupportActionBar(toolbar)
         toolbar.setTitleTextColor(Color.WHITE)
         title = "   Добавление продуктов" }
-
 
 
 
@@ -116,18 +120,32 @@ class Activity2 : AppCompatActivity() {
             val builder = AlertDialog.Builder(context)
 
             builder.setTitle("Редактировать").setCancelable(true)
-                .setNegativeButton("Удалить") { d,w ->   Snackbar.make(v,"Продукт ${listProduct[position].name} удален",
-                    Snackbar.LENGTH_LONG).show(); adapter.remove(adapter.getItem(position)) }
-                .setPositiveButton("Редактировать") { d,w -> name.setText(listProduct[position].name);price.setText(listProduct[position].price)
-                                                                  imageTv.setImageBitmap(listProduct[position].image);
-                                                                   if (listProduct[position].image == null) imageTv.setImageResource(R.drawable.qw)
-                                                                  adapter.remove(adapter.getItem(position))
+                .setNegativeButton("Удалить") { d,w ->   Toast.makeText(applicationContext,"Продукт ${listProduct[position].name} удален",
+                    Toast.LENGTH_LONG).show(); adapter.remove(adapter.getItem(position)) }
+                .setPositiveButton("Посмотреть") { d,w -> activity3( position)}
+                .setNeutralButton("Редактировать") { d,w -> name.setText(listProduct[position].name);price.setText(listProduct[position].price);
+                                                                   contextpr.setText(listProduct[position].contextpr)
+                                                                  imageTv.setImageDrawable(listProduct[position].image)
+                                                                  adapter.remove(adapter.getItem(position)) }.create(); builder.show() }
+    @SuppressLint("SuspiciousIndentation")
+    fun activity3(position: Int){
 
-                }.create()
-            builder.show()
+                 imageTv.setImageDrawable(listProduct[position].image)
+                  imageTv.buildDrawingCache()
+          val b = imageTv.getDrawingCache()
 
+          val intent = Intent(this,Activity3::class.java)
 
-        }
+        intent.putExtra("image",b)
+        intent.putExtra("name",listProduct[position].name)
+        intent.putExtra("price",listProduct[position].price)
+        intent.putExtra("context",listProduct[position].contextpr)
+
+            startActivity(intent)
+
+              imageTv.setImageResource(R.drawable.qw)
+
+    }
 
 }
 
