@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Product_Shop</string>
+    <string name="drawable_qw_png">drawable/qw.png</string>
 </resources>
