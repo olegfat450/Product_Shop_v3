@@ -19,7 +19,7 @@ import androidx.core.app.ActivityCompat.startActivityForResult
 import androidx.core.net.toUri
 import java.io.Serializable
 
-class Product(val name:String?, val price:String?, val contextpr:String?, val image: String?): Parcelable {
+class Product(val name:String?, val price:String?, val contextpr:String?, val image: String?): Parcelable  {
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readString(),
