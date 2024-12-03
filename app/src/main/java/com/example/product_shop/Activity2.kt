@@ -54,7 +54,7 @@ class Activity2 : AppCompatActivity() {
 
             var listtemp: List<Product> = listOf()
 
-    @SuppressLint("WrongThread", "ResourceType")
+    @SuppressLint("WrongThread", "ResourceType", "SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -88,7 +88,7 @@ class Activity2 : AppCompatActivity() {
         }
 
         button.setOnClickListener{
-                if (name.text.isEmpty()) return@setOnClickListener
+                 if (name.text.isEmpty()) return@setOnClickListener
 
                        listProduct += listOf(Product(name.text.toString(),price.text.toString(),contextpr.text.toString(),imageUri.toString()))
 
